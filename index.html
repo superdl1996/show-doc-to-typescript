@@ -41,7 +41,7 @@
       })
       const regex2 = /\/\/(.*?):/g
       const text3 = text2.replace(regex2, (match, capturedGroup) => {
-        return '//' + capturedGroup + '\n'
+        return '//\n' + capturedGroup + '\n'
       })
       const text4 = `export type typeName = {
        ${text3}
