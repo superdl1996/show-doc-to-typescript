@@ -16,8 +16,8 @@
       width: 100%;
       height: 400px;
     }
-	
-	#output {
+
+    #output {
       white-space: pre-line;
     }
   </style>
@@ -32,20 +32,22 @@
     textarea.addEventListener("blur", (e) => {
       let text = e.target.value
       const regex = /\s/g;
-      const text1 = text.replace(regex, ":")
+      const text1 = text.replace(regex, ":") + ":"
       const regex1 = /(boolean:|string:|number:)/g;
       const text2 = text1.replace(regex1, (match, capturedGroup) => {
         if (["boolean:", "string:", "number:"].includes(capturedGroup)) {
           return capturedGroup.replace(":", "; //")
         }
       })
+      console.log(text2)
       const regex2 = /\/\/(.*?):/g
       const text3 = text2.replace(regex2, (match, capturedGroup) => {
+        console.log(match)
         return '// ' + capturedGroup + '\n'
       })
       const text4 = `export type typeName = {
-       ${text3}
-      }`
+       ${text3}}`
+
       document.querySelector("#output").innerHTML = text4
     })
   </script>
