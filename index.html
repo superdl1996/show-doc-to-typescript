@@ -36,7 +36,7 @@
       const regex1 = /(boolean:|string:|number:)/g;
       const text2 = text1.replace(regex1, (match, capturedGroup) => {
         if (["boolean:", "string:", "number:"].includes(capturedGroup)) {
-          return capturedGroup.replace(":", "; //")
+          return " " + capturedGroup.replace(":", "; //")
         }
       })
       console.log(text2)
