@@ -59,8 +59,13 @@ const formatApi = ({ type, apiLink = '' }) => {
   const listReturn = {
     ...publicReturn,
     // 当前选中
-    currentState: [nameBefore + 'Current', 'set' + nameBefore.slice(0, 1).toUpperCase() + nameBefore.slice(1) + 'Current'],
-    tsName: getDomById('resetTsName').value || nameBefore.slice(0, 1).toUpperCase() + nameBefore.slice(1) + 'ListItem',
+    currentState: [
+      nameBefore + 'Current',
+      'set' + nameBefore.slice(0, 1).toUpperCase() + nameBefore.slice(1) + 'Current',
+    ],
+    tsName:
+      getDomById('resetTsName').value ||
+      nameBefore.slice(0, 1).toUpperCase() + nameBefore.slice(1) + 'ListItem',
     persistenceKey: getDomById('tableName').value.toUpperCase(),
     author: getDomById('author').value,
   };
@@ -128,7 +133,9 @@ const getVerifyTs = () => {
   const verifyTsText = json2typescriptTextarea.value;
   const regex = /\s|{|}/g;
   const verifyTsText1 = verifyTsText.replace(regex, '');
-  const verifyTsArray = verifyTsText1.slice(verifyTsText1.indexOf('RootObject') + 'RootObject'.length).split(';');
+  const verifyTsArray = verifyTsText1
+    .slice(verifyTsText1.indexOf('RootObject') + 'RootObject'.length)
+    .split(';');
   const copyTsArray = getTsToArray(getDomById('showDocTextarea').value);
   if (!verifyTsArray.length) return copyTsArray;
   const verifyTsArray1 = verifyTsArray.map((item) => {
@@ -331,8 +338,6 @@ const generateUseFormCloumns = (props) => {
     const columns: ProFormColumnsType<${tsName}>[] = ${cloumsJson}
     return columns;
   }
-  
-  export default columns;
   `;
   getDomById('useFormCloumns').innerText = html;
   setCopyTextByBrotherId('useFormCloumns', html);
@@ -370,7 +375,9 @@ const generateUseTableColumns = (props) => {
   });
   cloumsArray.push();
   const reg = /(},|\[)/g;
-  const cloumsJson = JSON.stringify(cloumsArray).replace(reg, '$1\n').replace(']', `{title: '操作',customRender () { },search: false}\n]`);
+  const cloumsJson = JSON.stringify(cloumsArray)
+    .replace(reg, '$1\n')
+    .replace(']', `,{title: '操作',customRender () { },search: false}\n]`);
 
   const html = `import { TableColumnsDefine } from '@/components/BaseTable/typings';
   import type { ${tsName} } from './typings';
