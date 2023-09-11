@@ -12,45 +12,244 @@
       padding: 0;
     }
 
-    textarea {
-      width: 100%;
-      height: 400px;
+    .flex {
+      display: flex;
     }
 
-    #output {
+    .flex1 {
+      flex: 1;
+    }
+
+    .a-i_c {
+      align-items: center;
+    }
+
+    body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background-color: #999999;
+      border-radius: 10px;
+    }
+
+    a:visited {
+      color: #0000EE;
+    }
+
+    a:active {
+      color: red;
+    }
+
+    .copy-toast {
+      z-index: 1;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .wrap {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0;
+      right: 50%;
+    }
+
+    .generate-btn,
+    .copy-btn {
+      padding: 4px 20px;
+    }
+
+    .container {
+      padding: 10px;
+    }
+
+    .textarea {
+      width: 99%;
+      height: 200px;
+      margin-top: 10px;
+    }
+
+    .input {
+      height: 20px;
+    }
+
+    .xlsx-dialog {
+      width: 1200px;
+      height: 98%;
+      margin: 10px auto 0;
+    }
+
+    .xlsx-textarea {
+      display: block;
+      margin: 10px auto 10px;
+      width: 98%;
+      height: 40%;
+    }
+
+    .xlsx-textarea-img {
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .xlsx-textarea-footer {
+      justify-content: center;
+    }
+
+    #output,
+    .tab-pane {
       white-space: pre-line;
+    }
+
+    .tab-pane {
+      min-height: 1000px;
+    }
+
+    .showdoc-textarea-label {
+      display: block;
+    }
+
+    .showdoc-textarea-label a {
+      cursor: pointer;
+    }
+
+    .output {
+      min-height: 24px;
+    }
+
+    .tab-header {
+      border-top: 1px dashed red;
+      padding-top: 10px;
+      margin-top: 10px;
+      list-style: none;
+    }
+
+    .tab-header li {
+      padding: 0 10px;
+      cursor: pointer;
+    }
+
+    .active {
+      color: red
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .show {
+      display: block;
+      opacity: 1;
     }
   </style>
 </head>
 
 <body>
-  <textarea id="textarea"></textarea>
-  <div id="output"></div>
+  <div class="container" id="container">
+    <input type="text" id="copyInput" style="display:block;height:0;border: none;">
+    <div id="copyToast" class="copy-toast hide">
+      复制成功!
+    </div>
 
-  <script>
-    const textarea = document.querySelector("#textarea")
-    textarea.addEventListener("blur", (e) => {
-      let text = e.target.value
-      const regex = /\s/g;
-      const text1 = text.replace(regex, ":") + ":"
-      const regex1 = /(boolean:|string:|number:)/g;
-      const text2 = text1.replace(regex1, (match, capturedGroup) => {
-        if (["boolean:", "string:", "number:"].includes(capturedGroup)) {
-          return " " + capturedGroup.replace(":", "; //")
-        }
-      })
-      console.log(text2)
-      const regex2 = /\/\/(.*?):/g
-      const text3 = text2.replace(regex2, (match, capturedGroup) => {
-        console.log(match)
-        return '// ' + capturedGroup + '\n'
-      })
-      const text4 = `export type typeName = {
-       ${text3}}`
+    <div>
+      (persistenceKey,自动转大写): <input type="text" id="tableName" class="input" value="professionalAssessment">
+      作者(用户注释): <input type="text" id="author" class="input" value="DL">
+      列表接口路径: <input type="text" id="tableList" class="input" value="{{myHost}}/business/assess/queryPageInfo.action">
+      新增修改路径: <input type="text" id="tableEdit" class="input" value="{{myHost}}/business/assess/save.action">
+      删除接口路径: <input type="text" id="tableDel" class="input" value="{{myHost}}/business/assess/deleteByIds.action">
+      <button class="generate-btn" onclick="handleGenerate()">生成</button>
+      重置接口类型名字: <input type="text" id="resetTsName" class="input" placeholder="(非必填)重置生成的ts类型名字" />
+    </div>
+    <dialog id="xlsxDialog" class="xlsx-dialog">
+      <textarea id="xlsxTextarea" class="xlsx-textarea">
+settled_status	是否结算过,0:未结算，1:已结算
+production_dept_code	分厂编码
+production_dept_name	分厂
+production_base_code	总厂编码
+production_base_name	总厂
+remark	说明
+bill_sort	排序字段
+bill_status 	单据状态
+create_man_id	修改人ID
+create_man	创建人姓名
+create_datetime	创建时间        
+      </textarea>
+      <div class="xlsx-textarea-footer flex">
+        <button class="generate-btn" onclick="handleXlsxGenerate()">生成</button>
+        <button class="generate-btn" onclick="xlsxDialog.close()">关闭</button>
+      </div>
+      <img class="xlsx-textarea-img" src="./img/Example.jpg" alt="" srcset="">
+    </dialog>
+    <div class="flex">
+      <div class="flex1">
+        <label class="showdoc-textarea-label" for="showDocTextarea">什么?后端没有给我生成字段注释<a href="javascript:void(0);"
+            onclick="xlsxDialog.showModal()">试试根据数据库xlsx生成</a>配合右侧类型修正</label>
+        <textarea id="showDocTextarea" name="showDocTextarea" class="textarea showdoc-textarea">
+productionDeptCode	string	项目主管单位编码
+productionDeptName	string	项目主管单位
+projectCode	string	工程编号
+projectName	string	工程名称
+projectType	string	工程类型
+listId	string	无
+completeDate	string	审定日期</textarea>
+      </div>
+      <div class="flex1">
+        <label class="showdoc-textarea-label" for="showDocTextarea">去<a target="_blank"
+            href="https://tooltt.com/json2typescript">https://tooltt.com/json2typescript</a>看看</label>
+        <textarea id="json2typescriptTextarea" class="textarea" placeholder="(非必填)复制https://tooltt.com/json2typescript/转换的ts类型进行类型修正 示例:
+  export interface RootObject {
+    productionDeptCode : number;
+    projectType: number;
+  }"></textarea>
+      </div>
 
-      document.querySelector("#output").innerHTML = text4
-    })
-  </script>
+    </div>
+
+    <div class="wrap">
+      <div id="output" class="output"></div><button class="copy-btn">复制</button>
+    </div>
+    <ul class="tab-header flex" id="tabHeader">
+      <li class="tab-title active">index.tsx</li>
+      <li class="tab-title">services.ts</li>
+      <li class="tab-title">typings.d.ts</li>
+      <li class="tab-title">useFormCloumns.tsx</li>
+      <li class="tab-title">useTableColumns.tsx</li>
+    </ul>
+    <ul class="tab-content">
+      <li class="tab-pane wrap hide show">
+        <div id="index">待生成</div>
+        <button class="copy-btn">复制</button>
+      </li>
+      <li class="tab-pane wrap hide">
+        <div id="services">待生成</div>
+        <button class="copy-btn">复制</button>
+      </li>
+      <li class="tab-pane wrap hide">
+        <div id="typings">待生成</div>
+        <button class="copy-btn">复制</button>
+      </li>
+      <li class="tab-pane wrap hide">
+        <div id="useFormCloumns">待生成</div>
+        <button class="copy-btn">复制</button>
+      </li>
+      <li class="tab-pane wrap hide">
+        <div id="useTableColumns">待生成</div>
+        <button class="copy-btn">复制</button>
+      </li>
+    </ul>
+  </div>
+  <script src="./js/index.js"></script>
 </body>
 
 </html>
