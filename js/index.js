@@ -207,15 +207,6 @@ const generateIndex = (props) => {
       import useTablecolumns from './useTableColumns';
       import useFormCloumns from './useFormCloumns';
 
-      /** 字典 */
-      let valueEnums: SYS.DictDefine;
-      const queryValueEnums = async () => {
-        const queryKeys: (keyof SYS.DictDefine)[] = ['WORK_STATUS', 'BIZ_TYPE'];
-        const res = await queryDictItemByClassCode(queryKeys);
-        valueEnums = res?.rows;
-      };
-      queryValueEnums();
-
       export default () => {
         const [${currentState[0]}, ${currentState[1]}] = useState<${tsName}>();
         const tableActionRef = useRef<TableActionType>();
@@ -237,15 +228,15 @@ const generateIndex = (props) => {
         };
 
         const toolbar: TableToolbarDefine<${tsName}> = {
-          plus: { columns: useFormCloumns({ valueEnums }), onSubmit: plusSubmit },
-          edit: { columns: useFormCloumns({ valueEnums }), onSubmit: plusSubmit },
+          plus: { columns: useFormCloumns(), onSubmit: plusSubmit },
+          edit: { columns: useFormCloumns(), onSubmit: plusSubmit },
           deleted: { onSubmit: ${apiDelName} },
         };
 
         const generateTable: BaseTableProps<${tsName}> = {
           persistenceKey: '${persistenceKey}TABLE',
           service: { dataSourceRequest },
-          columns: useTablecolumns({ valueEnums }),
+          columns: useTablecolumns(),
           onActionCurrent: (${currentState[0]}) => ${currentState[1]}(${currentState[0]}),
           actionRef: tableActionRef,
           toolbar,
@@ -267,6 +258,7 @@ const generateServices = (props) => {
   const { author, tsName, apiPathObj, apiNameObj } = props;
   const html = `import { request } from 'umi';
   import type { ${tsName} } from './typings';
+  import { getValueEnumsRequest } from '@/pages/common/services';
 
   /**
    * @Author: ${author}
@@ -303,6 +295,21 @@ const generateServices = (props) => {
       data,
     });
   }
+
+  /**
+ * @Author: DL
+ * @Date: 2023-09-12 16:56:52
+ * @Description: 数据字典
+ */
+  const valueEnumsRequestFn = getValueEnumsRequest([
+    'BILL_STATUS',
+    'PROJECT_TYPE',
+    'PREPARE_METHOD',
+    'CONSTRUCT_NATURE',
+  ]);
+  export async function valueEnumsRequest(key: keyof SYS.DictDefine) {
+    return valueEnumsRequestFn(key);
+  }
   `;
   const services = getDomById('services');
   services.innerText = html;
@@ -332,9 +339,9 @@ const generateUseFormCloumns = (props) => {
   const cloumsJson = JSON.stringify(cloumsArray).replace(reg, '$1\n').replace(']', '\n]');
   const html = `import { ProFormColumnsType } from '@ant-design/pro-form';
   import type { ${tsName} } from './typings';
+  import { valueEnumsRequest } from './services';
 
-  type Props = { valueEnums: SYS.DictDefine };
-  export default ({ valueEnums }: Props) => {
+  export default () => {
     const columns: ProFormColumnsType<${tsName}>[] = ${cloumsJson}
     return columns;
   }
@@ -381,9 +388,9 @@ const generateUseTableColumns = (props) => {
 
   const html = `import { TableColumnsDefine } from '@/components/BaseTable/typings';
   import type { ${tsName} } from './typings';
+  import { valueEnumsRequest } from './services';
 
-  type Props = { valueEnums: SYS.DictDefine };
-  export default ({ valueEnums }: Props) => {
+  export default () => {
     const columns: TableColumnsDefine<${tsName}> = ${cloumsJson}
     return columns
   }
