@@ -234,7 +234,7 @@ const generateIndex = (props) => {
         };
 
         const generateTable: BaseTableProps<${tsName}> = {
-          persistenceKey: '${persistenceKey}TABLE',
+          persistenceKey: '${persistenceKey}LISTTABLE',
           service: { dataSourceRequest },
           columns: useTablecolumns(),
           onActionCurrent: (${currentState[0]}) => ${currentState[1]}(${currentState[0]}),
