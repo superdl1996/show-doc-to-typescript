@@ -204,7 +204,7 @@ const generateIndex = (props) => {
 
       import type { ${tsName} } from './typings';
       import { ${apiListName}, ${apiEditName}, ${apiDelName} } from './services';
-      import useTablecolumns from './useTableColumns';
+      import useTableColumns from './useTableColumns';
       import useFormCloumns from './useFormCloumns';
 
       export default () => {
@@ -236,7 +236,7 @@ const generateIndex = (props) => {
         const generateTable: BaseTableProps<${tsName}> = {
           persistenceKey: '${persistenceKey}TABLE',
           service: { dataSourceRequest },
-          columns: useTablecolumns(),
+          columns: useTableColumns(),
           onActionCurrent: (${currentState[0]}) => ${currentState[1]}(${currentState[0]}),
           actionRef: tableActionRef,
           toolbar,
