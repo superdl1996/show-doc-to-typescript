@@ -197,10 +197,8 @@ const generateTstoCloumns = () => {
 const generateIndex = (props) => {
   const { apiListName, apiEditName, apiDelName, currentState, tsName, persistenceKey } = props;
   const html = `import { useRef, useState } from 'react';
-      import type { BaseTableProps, TableActionType, TableToolbarDefine } from '@/components/BaseTable/typings';
+      import { BaseTableProps, TableActionType, TableToolbarDefine, JDViewContainer, JDBaseTable } from 'jd-framework-web/package/components';
       import { queryDictItemByClassCode } from '@/common/services/system';
-      import ViewContainer from '@/components/ViewContainer';
-      import BaseTable from '@/components/BaseTable';
 
       import type { ${tsName} } from './typings';
       import { ${apiListName}, ${apiEditName}, ${apiDelName} } from './services';
@@ -243,9 +241,9 @@ const generateIndex = (props) => {
         };
 
         return (
-          <ViewContainer>
-            <BaseTable {...generateTable} />
-          </ViewContainer>
+          <JDViewContainer>
+            <JDBaseTable {...generateTable} />
+          </JDViewContainer>
         );
       };
     `;
@@ -386,7 +384,7 @@ const generateUseTableColumns = (props) => {
     .replace(reg, '$1\n')
     .replace(']', `,{title: '操作',customRender () { },search: false}\n]`);
 
-  const html = `import { TableColumnsDefine } from '@/components/BaseTable/typings';
+  const html = `import { TableColumnsDefine } from 'jd-framework-web/package/components';
   import type { ${tsName} } from './typings';
   import { valueEnumsRequest } from './services';
 
